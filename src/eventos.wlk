@@ -1,27 +1,27 @@
-import example.*
+import personajes.*
 import wollok.game.*
 object eventos{
+	const listaVisuales = []
+	// generadores
 	method autoRojo(){
 		var auto = new Auto(position=carril.aleatorio(),image="autoJugador.png")
 		game.addVisual(auto)
-		
+		listaVisuales.add(auto)		
 	}
-	method moverArboles(){
-		generarArbol.arboles().forEach{a=> a.meMovieron()}
+	
+	method arbol(){
+		var arbol = new Arbol(position=game.at(0,6))
+		game.addVisual(arbol)
+		listaVisuales.add(arbol)
+	}
+	
+	method moverHaciaAbajo(){
+		listaVisuales.forEach { obj => obj.mover() }
 	}
 }
 object carril{
 	
 	method aleatorio()=game.at(2.randomUpTo(5.1).truncate(0),6)
-			
+		
+	
 }
-object generarArbol{
-	const arbolesGenerados =[]
-	method arboles()= arbolesGenerados
-	method nuevoArbol(){
-		const arbol = new Arbol()
-		arbolesGenerados.add(arbol)
-		game.addVisual(arbol)
-	} 
-}
-
