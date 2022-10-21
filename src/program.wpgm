@@ -1,0 +1,30 @@
+import wollok.game.*
+import example.*
+import eventos.*
+program juego {
+
+	//Config
+	game.title("AutosLocos")
+	game.height(7)
+	game.width(8)
+	game.boardGround("Autopista.png")
+	game.cellSize(100)
+
+	//Visuales
+	game.addVisual(autoJugador)
+	game.addVisual(garaje)
+	generarArbol.nuevoArbol()
+	
+	//Controles
+	keyboard.left().onPressDo { autoJugador.position(autoJugador.position().left(1)) }
+	keyboard.right().onPressDo { autoJugador.position(autoJugador.position().right(1)) }
+	
+	//Eventos
+	
+	game.onTick(2000,"prueba",{=>eventos.autoRojo()})
+	game.onTick(500,"moverArboles",{=> eventos.moverArboles()})
+	game.onTick(2000,"agregarArbol",{=> generarArbol.nuevoArbol()})
+
+	//Start
+	game.start()
+}
