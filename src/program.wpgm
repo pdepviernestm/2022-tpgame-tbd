@@ -8,22 +8,13 @@ program juego {
 	game.width(8)
 	game.boardGround("Autopista.png")
 	game.cellSize(135)
-
-
-	game.addVisual(autoJugador)
 	game.addVisual(garaje)
-	eventos.arbol()
-	
-	//Controles
-	keyboard.left().onPressDo { autoJugador.position(autoJugador.position().left(1)) }
-	keyboard.right().onPressDo { autoJugador.position(autoJugador.position().right(1)) }
 	
 	//Eventos
+	eventos.generarJugador()
+	game.onTick(2000,"generarAuto",{=>eventos.generarAutoRojo()})
+	game.onTick(2000,"generarArbol",{=> eventos.generarArbol()})
 	
-	game.onTick(2000,"agregar-auto",{=>eventos.autoRojo()})
-	game.onTick(500,"moverArboles",{=> eventos.moverHaciaAbajo()})
-	game.onTick(2000,"agregarArbol",{=> eventos.arbol()})
-
 	//Start
 	game.start()
 }
