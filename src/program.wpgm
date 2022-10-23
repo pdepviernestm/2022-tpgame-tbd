@@ -9,9 +9,13 @@ program juego {
 	game.boardGround("Autopista.png")
 	game.cellSize(100)
 	game.addVisual(garaje)
+	game.addVisual(autoJugador)
 	
+	//controles
+	keyboard.left().onPressDo { autoJugador.moverIzquierda() }
+	keyboard.right().onPressDo { autoJugador.moverDerecha() }
 	//Eventos
-	generador.generarJugador()
+	
 	game.onTick(2000,"generarAuto",{=>generador.generarAutoRojo()})
 	game.onTick(2000,"generarArbol",{=> generador.generarArbol()})
 	game.onCollideDo(autoJugador,{a => evento.choque(a)} )

@@ -17,13 +17,7 @@ object evento{
 	
 	
 }
-object generador{
-	method generarJugador(){
-		game.addVisual(autoJugador)
-		keyboard.left().onPressDo { autoJugador.moverIzquierda() }
-		keyboard.right().onPressDo { autoJugador.moverDerecha() }
-	}
-	
+object generador{	
 	method generarAutoRojo(){
 		var auto = new Auto(position=carril.aleatorio(),image="autoJugador.png")
 		game.addVisual(auto)
