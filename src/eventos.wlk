@@ -1,9 +1,23 @@
 import personajes.*
 import wollok.game.*
-object eventos{
+object evento{
 	
-	// generadores
+	method choque(algo){
+		if(algo.esObstaculo()){
+			game.removeTickEvent("generarAuto")
+			game.removeTickEvent("generarArbol")
+			game.removeTickEvent("movimiento del obstaculo") //no se porque no los para a los autos
+			self.gameOver()
+		}
+	}
+	method gameOver(){
+		game.addVisual(cartel)
+		game.schedule(4000,{=> game.stop()})
+	}
 	
+	
+}
+object generador{
 	method generarJugador(){
 		game.addVisual(autoJugador)
 		keyboard.left().onPressDo { autoJugador.moverIzquierda() }
@@ -21,7 +35,6 @@ object eventos{
 		game.addVisual(arbol)
 		arbol.movimiento()
 	}
-	
 }
 object carril{
 	

@@ -17,10 +17,13 @@ object autoJugador {
 	}
 }
 object garaje{
-	var property position = game.at(7,0) //estaba en 13
+	var property position = game.at(7,0) 
 	method image()= "garaje.png"
 }
-
+object cartel{
+	var property position = game.at(2,3) 
+	method image()= "fin.png"
+}
 class Obstaculo{
 	var velocidad //cada cuanto se mueve
 	var property position
@@ -28,9 +31,10 @@ class Obstaculo{
 	method movimiento(){
 		game.onTick(velocidad,"movimiento del obstaculo",{=> position = position.down(1)})
 	}
+	method esObstaculo()= true
 }
 class Auto inherits Obstaculo(velocidad = 500){
-	//Arrancan siempre en(x,7) x varia de 2 a 5 y siempre par
+	//Arrancan siempre en(x,7) x varia de 2 a 5 
 	var image
 	method image(imagen){
 		image = imagen
