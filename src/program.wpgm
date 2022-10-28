@@ -7,18 +7,19 @@ program juego {
 	game.height(7)
 	game.width(8)
 	game.boardGround("Autopista.png")
-	game.cellSize(100)
+	game.cellSize(130)
 	game.addVisual(garaje)
+	
+	//jugador
 	game.addVisual(autoJugador)
-	
-	//controles
-	keyboard.left().onPressDo { autoJugador.moverIzquierda() }
-	keyboard.right().onPressDo { autoJugador.moverDerecha() }
+	keyboard.left().onPressDo { autoJugador.powerUpActual().moverIzquierda() }
+	keyboard.right().onPressDo { autoJugador.powerUpActual().moverDerecha() }
+
 	//Eventos
-	
 	game.onTick(2000,"generarAuto",{=>generador.generarAutoRojo()})
 	game.onTick(2000,"generarArbol",{=> generador.generarArbol()})
-	game.onCollideDo(autoJugador,{a => evento.choque(a)} )
+	game.onTick(2000,"generarPowerUp",{=> generador.generarCajaMisteriosa()})
+
 	//Start
 	game.start()
 }

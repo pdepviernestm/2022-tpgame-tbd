@@ -1,15 +1,7 @@
 import personajes.*
 import wollok.game.*
 object evento{
-	
-	method choque(algo){
-		if(algo.esObstaculo()){
-			game.removeTickEvent("generarAuto")
-			game.removeTickEvent("generarArbol")
-			game.removeTickEvent("movimiento del obstaculo") //no se porque no los para a los autos
-			self.gameOver()
-		}
-	}
+
 	method gameOver(){
 		game.addVisual(cartel)
 		game.schedule(4000,{=> game.stop()})
@@ -17,11 +9,12 @@ object evento{
 	
 	
 }
-object generador{	
+object generador{
 	method generarAutoRojo(){
 		var auto = new Auto(position=carril.aleatorio(),image="autoJugador.png")
 		game.addVisual(auto)
-		auto.movimiento()		
+		auto.movimiento()	
+		game.onCollideDo(auto,{autoJugador => autoJugador.powerUpActual().chocar(auto)} )	
 	}
 	
 	method generarArbol(){
@@ -29,6 +22,13 @@ object generador{
 		game.addVisual(arbol)
 		arbol.movimiento()
 	}
+	method generarCajaMisteriosa(){
+		var caja = new CajaMisteriosa(position=carril.aleatorio().down(1))
+		game.addVisual(caja)
+		caja.movimiento()
+		game.onCollideDo(caja,{autoJugador => autoJugador.powerUpActual().chocar(caja)} )		
+	}
+
 }
 object carril{
 	
