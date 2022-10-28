@@ -16,11 +16,19 @@ object autoJugador{
 }
 
 
-object garaje{
-	var property position = game.at(7,0) 
+object hospital{
+	var property position 
 	method image()= "garaje.png"
 	method efectoDeChoque(){
 		autoJugador.capacidad(0)
+		autoJugador.position(game.at(5,0))
+	}
+	method aparecer(){
+		position = game.at(6,6) 
+		game.addVisual(self)
+		game.onTick(1000,"moverHospital",{self.position(position.down(1))})
+		game.schedule(7000,{game.removeTickEvent("moverHospital")})
+		game.schedule(10000,{game.removeVisual(self)})
 	}
 }
 
@@ -91,7 +99,7 @@ class PowerUp {
 		}	
 	}
 	method moverDerecha() {
-		if(autoJugador.position().x()<5 || game.hasVisual(garaje)){
+		if(autoJugador.position().x()<5 || game.hasVisual(hospital)){
 			autoJugador.position(autoJugador.position().right(1))
 		}
 	}
@@ -113,7 +121,7 @@ object invertirControles inherits PowerUp(duracion=4000){
 		}	
 	}
 	override method moverIzquierda() {
-		if(autoJugador.position().x()<5 || game.hasVisual(garaje)){
+		if(autoJugador.position().x()<5 || game.hasVisual(hospital)){
 			autoJugador.position(autoJugador.position().right(1))
 		}
 	}

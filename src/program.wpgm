@@ -8,7 +8,7 @@ program juego {
 	game.width(8)
 	game.boardGround("Autopista.png")
 	game.cellSize(130)
-	game.addVisual(garaje)
+	
 	
 	//jugador
 	game.addVisual(autoJugador)
@@ -20,7 +20,7 @@ program juego {
 	game.onTick(2000,"generarArbol",{=> generador.generarArbol()})
 	game.onTick(2000,"generarPowerUp",{=> generador.generarCajaMisteriosa()})
 	game.onTick(2000,"generarAccidente",{generador.generarAccidente()})
-
+	game.onTick(15000,"apareceHospital",{hospital.aparecer()})
 	game.onCollideDo(autoJugador,{obstaculo=>obstaculo.efectoDeChoque()})
 
 	//Start
