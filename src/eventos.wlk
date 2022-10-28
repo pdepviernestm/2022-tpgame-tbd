@@ -3,6 +3,7 @@ import wollok.game.*
 object evento{
 
 	method gameOver(){
+		game.clear()
 		game.addVisual(cartel)
 		game.schedule(4000,{=> game.stop()})
 	}
@@ -11,10 +12,9 @@ object evento{
 }
 object generador{
 	method generarAutoRojo(){
-		var auto = new Auto(position=carril.aleatorio(),image="autoJugador.png")
+		var auto = new Auto(position=carril.aleatorio(),image="auto.png")
 		game.addVisual(auto)
 		auto.movimiento()	
-		game.onCollideDo(auto,{autoJugador => autoJugador.powerUpActual().chocar(auto)} )	
 	}
 	
 	method generarArbol(){
@@ -26,13 +26,20 @@ object generador{
 		var caja = new CajaMisteriosa(position=carril.aleatorio().down(1))
 		game.addVisual(caja)
 		caja.movimiento()
-		game.onCollideDo(caja,{autoJugador => autoJugador.powerUpActual().chocar(caja)} )		
+	}
+	
+	method generarAccidente(){
+		const accidente = new Accidente(position=carril.aleatorio(),
+						image="accidente.png",
+						personas= new Range(start=1,end=5).anyOne())
+		game.addVisual(accidente)
+		accidente.movimiento()
 	}
 
 }
 object carril{
-	
-	method aleatorio()=game.at(2.randomUpTo(5.1).truncate(0),6)
+	var rango = new Range(start =2, end=5)
+	method aleatorio()=game.at(rango.anyOne(),6)
 		
 	
 }

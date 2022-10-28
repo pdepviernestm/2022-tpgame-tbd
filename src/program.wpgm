@@ -19,6 +19,9 @@ program juego {
 	game.onTick(2000,"generarAuto",{=>generador.generarAutoRojo()})
 	game.onTick(2000,"generarArbol",{=> generador.generarArbol()})
 	game.onTick(2000,"generarPowerUp",{=> generador.generarCajaMisteriosa()})
+	game.onTick(2000,"generarAccidente",{generador.generarAccidente()})
+
+	game.onCollideDo(autoJugador,{obstaculo=>obstaculo.efectoDeChoque()})
 
 	//Start
 	game.start()
