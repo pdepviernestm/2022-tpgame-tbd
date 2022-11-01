@@ -11,10 +11,19 @@ object evento{
 	
 }
 object generador{
+	var nivel = 1  
+	var rangoCaja = new Range(start=1,end=10)
 	method generarAutoRojo(){
 		var auto = new Auto(position=carril.aleatorio(),image="auto.png")
 		game.addVisual(auto)
 		auto.movimiento()	
+	}
+	
+	method generarAutos(){       // hay que hacer que empiece poniendo uno y vaya aumentando hasta 3
+		self.generarAutoRojo()
+		self.generarAutoRojo()
+		if(rangoCaja.anyOne()==9) self.generarCajaMisteriosa() /* 1/10 probabilidades de que sea una caja */
+		else self.generarAutoRojo()
 	}
 	
 	method generarArbol(){
@@ -23,7 +32,7 @@ object generador{
 		arbol.movimiento()
 	}
 	method generarCajaMisteriosa(){
-		var caja = new CajaMisteriosa(position=carril.aleatorio().down(1))
+		var caja = new CajaMisteriosa(position=carril.aleatorio())
 		game.addVisual(caja)
 		caja.movimiento()
 	}
@@ -39,7 +48,16 @@ object generador{
 }
 object carril{
 	var rango = new Range(start =2, end=5)
-	method aleatorio()=game.at(rango.anyOne(),6)
+	var carril
+	method aleatorio(){
+		carril = game.at(rango.anyOne(),6)
+		if(!game.getObjectsIn(carril).isEmpty()){
+			carril = self.aleatorio()
+		}
+		return carril
+	} 
+	
+	
 		
 	
 }

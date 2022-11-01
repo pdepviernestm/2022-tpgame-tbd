@@ -16,10 +16,10 @@ program juego {
 	keyboard.right().onPressDo { autoJugador.powerUpActual().moverDerecha() }
 
 	//Eventos
-	game.onTick(2000,"generarAuto",{=>generador.generarAutoRojo()})
+	game.onTick(2000,"generarAuto",{=>generador.generarAutos()})
 	game.onTick(2000,"generarArbol",{=> generador.generarArbol()})
-	game.onTick(2000,"generarPowerUp",{=> generador.generarCajaMisteriosa()})
-	game.onTick(2000,"generarAccidente",{generador.generarAccidente()})
+	//game.onTick(2000,"generarPowerUp",{=> generador.generarCajaMisteriosa()})   /*este lo hace generarAutos()*/
+	//game.onTick(2000,"generarAccidente",{generador.generarAccidente()})
 	game.onTick(15000,"apareceHospital",{hospital.aparecer()})
 	game.onCollideDo(autoJugador,{obstaculo=>obstaculo.efectoDeChoque()})
 

@@ -44,17 +44,20 @@ class Obstaculo{
 	var property position
 	method image()
 	method movimiento(){
-		game.onTick(velocidad,"movimiento del obstaculo",{self.moverHaciaAbajo()})
-		game.schedule(5000, {game.removeVisual(self)})
+		game.onTick(velocidad,"movimiento del obstaculo",{position = position.down(1)})
+		game.schedule(5000, {self.eliminar()})
 	}
-	method moverHaciaAbajo(){
-		position = position.down(1)
-		
+	method eliminar(){
+		game.removeVisual(self)
+		game.removeTickEvent("movimiento del obstaculo")
 	}
 	method efectoDeChoque(){
 		if(autoJugador.powerUpActual().estasBlindado())powerUpDefault.default()
 		else evento.gameOver()
 	}
+	
+	
+	
 }
 
 class Accidente inherits Obstaculo(velocidad=300){
@@ -70,7 +73,6 @@ class Accidente inherits Obstaculo(velocidad=300){
 class Auto inherits Obstaculo(velocidad = 500){
 	//Arrancan siempre en(x,7) x varia de 2 a 5 
 	var image
-
 	override method image()= image
 	
 }
