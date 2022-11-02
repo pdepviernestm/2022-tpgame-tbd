@@ -6,21 +6,37 @@ object autoJugador{
 	var property position= game.at(5,0) // arranca en 5 porque sale del garaje
 	var property powerUpActual = powerUpDefault
 	var property pasajeros = 0
-	var property capacidad = 1
 	var property image = "autoJugador.png"
 	method subirPasajeros(cant){
-		if(pasajeros + cant <= capacidad )pasajeros +=cant
-		//else deberia perder puntos
-	}
+		if(pasajeros + cant <= capacidad.capacidad() ){
+			pasajeros +=cant
 
+		}
+		else score.aumentarPuntaje(-cant)
+	}
+}
+object score{
+	var property puntaje = 0
+	method aumentarPuntaje(cant){
+		puntaje += cant
+		if(puntaje < 0) evento.gameOver()
+	}
+	method text() = puntaje.toString()
+	method position() = game.at(1, game.height()-1)
 }
 
+object capacidad{
+	var property capacidad = 10
+	method text() = capacidad.toString()
+	method position() = game.at(1, game.height()-3)
+}
 
 object hospital{
 	var property position 
 	method image()= "garaje.png"
 	method efectoDeChoque(){
-		autoJugador.capacidad(0)
+		score.aumentarPuntaje(autoJugador.pasajeros()*10)
+		autoJugador.pasajeros(0)
 		autoJugador.position(game.at(5,0))
 	}
 	method aparecer(){
@@ -38,7 +54,6 @@ object cartel{
 	method image()= "fin.png"
 }
 
-
 class Obstaculo{
 	var velocidad //cada cuanto se mueve
 	var property position
@@ -53,11 +68,9 @@ class Obstaculo{
 	}
 	method efectoDeChoque(){
 		if(autoJugador.powerUpActual().estasBlindado())powerUpDefault.default()
+		else if(autoJugador.powerUpActual().estasInmune()){}
 		else evento.gameOver()
 	}
-	
-	
-	
 }
 
 class Accidente inherits Obstaculo(velocidad=300){
@@ -83,13 +96,12 @@ class Arbol inherits Obstaculo(velocidad = 300){
 
 
 class CajaMisteriosa inherits Obstaculo(velocidad = 500){
-	const powerUpsDispoibles =[blindaje, invertirControles,congelar]
+	const powerUpsDispoibles =[blindaje, invertirControles,congelar,aumentarCapacidad,inmunidad]
 	var efectoQueDoy= powerUpsDispoibles.get(new Range(start=0,end=powerUpsDispoibles.size()-1 ).anyOne())
 	override method image() = "cajaMisteriosa.png"
 	override method efectoDeChoque(){
-		autoJugador.image(efectoQueDoy.image())
 		autoJugador.powerUpActual(efectoQueDoy)
-		game.schedule(efectoQueDoy.duracion(),{powerUpDefault.default()})
+		efectoQueDoy.efecto()
 	}
 }
 class PowerUp {
@@ -100,12 +112,19 @@ class PowerUp {
 			autoJugador.position(autoJugador.position().left(1))
 		}	
 	}
+	//!(game.getObjectsIn(game.at(0,6)).isEmpty())
 	method moverDerecha() {
-		if(autoJugador.position().x()<5 || game.hasVisual(hospital)){
+		if(autoJugador.position().x()<5 || (game.hasVisual(hospital)&&hospital.position().y()==0) ){
 			autoJugador.position(autoJugador.position().right(1))
 		}
 	}
 	method estasBlindado()= false
+	method estasInmune()=false
+
+	method efecto(){
+		autoJugador.image(self.image())
+		game.schedule(duracion,{powerUpDefault.default()})
+	}
 }
 
 object powerUpDefault inherits PowerUp(duracion = 0){
@@ -123,7 +142,7 @@ object invertirControles inherits PowerUp(duracion=4000){
 		}	
 	}
 	override method moverIzquierda() {
-		if(autoJugador.position().x()<5 || game.hasVisual(hospital)){
+		if(autoJugador.position().x()<5 || (game.hasVisual(hospital)&&hospital.position().y()==0)){
 			autoJugador.position(autoJugador.position().right(1))
 		}
 	}
@@ -138,5 +157,22 @@ object congelar inherits PowerUp(duracion = 1000){
 	override method image()="autoCongelado.png"
 	override method moverIzquierda(){}
 	override method moverDerecha(){}
+}
+
+object aumentarCapacidad inherits PowerUp(duracion = 1){
+	override method efecto(){
+		capacidad.capacidad(capacidad.capacidad()+1)
+	}
+}
+object inmunidad inherits PowerUp(duracion = 3000){
+	var img=1
+	override method image() = "auto.png"
+	override method estasInmune ()= true
+	override method efecto(){
+		autoJugador.image(self.image())
+		//game.onTick(100,"titilar",{self.cambiarImagen()})
+		//game.schedule(duracion-20,{game.removeTickEvent("titilar")})
+		game.schedule(duracion,{powerUpDefault.default()})
+	}
 }
 

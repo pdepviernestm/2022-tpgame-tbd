@@ -1,17 +1,85 @@
 import personajes.*
 import wollok.game.*
 object evento{
-
+	var pista = 1
 	method gameOver(){
 		game.clear()
 		game.addVisual(cartel)
 		game.schedule(4000,{=> game.stop()})
 	}
-	
+	method cambiarFondo(){
+		if (pista == 1){
+			pista = 2
+			game.boardGround("Autopista2.png")
+		}
+		else{
+			pista = 1
+			game.boardGround("arbol.png")
+		}
+	}
 	
 }
+object nivel1{
+	method nivel(){
+		game.onTick(2000,"generarAuto",{=>generador.generarObstaculos()})
+		game.onTick(2000,"generarArbol",{=> generador.generarArbol()})
+		generador.nivel(0)
+		game.schedule(10000,{self.pasarDeNivel()})
+	}
+	method pasarDeNivel(){
+		game.removeTickEvent("generarAuto")
+		game.removeTickEvent("generarArbol")
+		nivel2.nivel()
+	}
+}
+object nivel2{
+	method nivel(){
+		game.onTick(1500,"generarAuto",{=>generador.generarObstaculos()})
+		game.onTick(1500,"generarArbol",{=> generador.generarArbol()})
+		generador.nivel(1)
+		game.schedule(20000,{self.pasarDeNivel()})
+	}
+	method pasarDeNivel(){
+		game.removeTickEvent("generarAuto")
+		game.removeTickEvent("generarArbol")
+		nivel3.nivel()
+	}
+}
+object nivel3{
+	method nivel(){
+		game.onTick(1500,"generarAuto",{=>generador.generarObstaculos()})
+		game.onTick(1500,"generarArbol",{=> generador.generarArbol()})
+		generador.nivel(2)
+		game.schedule(20000,{self.pasarDeNivel()})
+	}
+	method pasarDeNivel(){
+		game.removeTickEvent("generarAuto")
+		game.removeTickEvent("generarArbol")
+		nivel4.nivel()
+	}
+}
+object nivel4{
+	method nivel(){
+		game.onTick(1300,"generarAuto",{=>generador.generarObstaculos()})
+		game.onTick(1300,"generarArbol",{=> generador.generarArbol()})
+		game.schedule(20000,{self.pasarDeNivel()})
+	}
+	method pasarDeNivel(){
+		game.removeTickEvent("generarAuto")
+		game.removeTickEvent("generarArbol")
+		nivel5.nivel()
+	}
+}
+object nivel5{
+	method nivel(){
+		game.onTick(1000,"generarAuto",{=>generador.generarObstaculos()})
+		game.onTick(1000,"generarArbol",{=> generador.generarArbol()})
+	}
+
+}
+
 object generador{
-	var nivel = 1  
+	var property nivel = 0  
 	var rangoCaja = new Range(start=1,end=10)
 	method generarAutoRojo(){
 		var auto = new Auto(position=carril.aleatorio(),image="auto.png")
@@ -19,10 +87,9 @@ object generador{
 		auto.movimiento()	
 	}
 	
-	method generarAutos(){       // hay que hacer que empiece poniendo uno y vaya aumentando hasta 3
-		self.generarAutoRojo()
-		self.generarAutoRojo()
-		if(rangoCaja.anyOne()==9) self.generarCajaMisteriosa() /* 1/10 probabilidades de que sea una caja */
+	method generarObstaculos(){     
+		nivel.times{n=>self.generarAutoRojo()}
+		if(rangoCaja.anyOne() >=8) self.generarCajaMisteriosa() /* 1/10 probabilidades de que sea una caja */
 		else self.generarAutoRojo()
 	}
 	
@@ -56,8 +123,4 @@ object carril{
 		}
 		return carril
 	} 
-	
-	
-		
-	
 }

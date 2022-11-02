@@ -6,9 +6,10 @@ program juego {
 	//Config
 	game.height(7)
 	game.width(8)
-	game.boardGround("Autopista.png")
+	game.boardGround("Autopista2.png")
 	game.cellSize(130)
-	
+	game.addVisual(score)
+	game.addVisual(capacidad)
 	
 	//jugador
 	game.addVisual(autoJugador)
@@ -16,12 +17,12 @@ program juego {
 	keyboard.right().onPressDo { autoJugador.powerUpActual().moverDerecha() }
 
 	//Eventos
-	game.onTick(2000,"generarAuto",{=>generador.generarAutos()})
-	game.onTick(2000,"generarArbol",{=> generador.generarArbol()})
+	nivel1.nivel()
 	//game.onTick(2000,"generarPowerUp",{=> generador.generarCajaMisteriosa()})   /*este lo hace generarAutos()*/
 	//game.onTick(2000,"generarAccidente",{generador.generarAccidente()})
 	game.onTick(15000,"apareceHospital",{hospital.aparecer()})
 	game.onCollideDo(autoJugador,{obstaculo=>obstaculo.efectoDeChoque()})
+	game.onTick(1000,"puntaje", {score.aumentarPuntaje(1)})
 
 	//Start
 	game.start()
