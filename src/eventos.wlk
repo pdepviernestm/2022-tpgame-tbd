@@ -1,21 +1,22 @@
 import personajes.*
 import wollok.game.*
 object evento{
-	var pista = 1
+	var flag = 0
+	method inicio(){
+		if(flag==0){
+			nivel1.nivel()
+			flag = 1
+			game.onTick(1000,"puntaje", {score.aumentarPuntaje(1)})
+			game.addVisual(score)
+			game.addVisual(capacidad)
+			game.onTick(15000,"apareceHospital",{hospital.aparecer()})
+			game.removeVisual(inicioDeJuego)
+		}
+	}
 	method gameOver(){
 		game.clear()
 		game.addVisual(cartel)
 		game.schedule(4000,{=> game.stop()})
-	}
-	method cambiarFondo(){
-		if (pista == 1){
-			pista = 2
-			game.boardGround("Autopista2.png")
-		}
-		else{
-			pista = 1
-			game.boardGround("arbol.png")
-		}
 	}
 	
 }

@@ -48,9 +48,12 @@ object hospital{
 	}
 }
 
-
+object inicioDeJuego{
+	var property position = game.at(1,3) 
+	method image()= "inicio.png"
+}
 object cartel{
-	var property position = game.at(2,3) 
+	var property position = game.at(1,2) 
 	method image()= "fin.png"
 }
 
@@ -166,12 +169,10 @@ object aumentarCapacidad inherits PowerUp(duracion = 1){
 }
 object inmunidad inherits PowerUp(duracion = 3000){
 	var img=1
-	override method image() = "auto.png"
+	override method image() = "autoInmune.png"
 	override method estasInmune ()= true
 	override method efecto(){
 		autoJugador.image(self.image())
-		//game.onTick(100,"titilar",{self.cambiarImagen()})
-		//game.schedule(duracion-20,{game.removeTickEvent("titilar")})
 		game.schedule(duracion,{powerUpDefault.default()})
 	}
 }
