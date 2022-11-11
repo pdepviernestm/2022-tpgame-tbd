@@ -1,0 +1,7 @@
+import wollok.game.*
+import personajes.*
+import eventos.*
+import config.*
+program juego {
+	config.configurar()
+}
