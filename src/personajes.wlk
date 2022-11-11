@@ -5,15 +5,7 @@ import wollok.game.*
 object autoJugador{
 	var property position= game.at(5,0) // arranca en 5 porque sale del garaje
 	var property powerUpActual = powerUpDefault
-	var property pasajeros = 0
 	var property image = "autoJugador.png"
-	method subirPasajeros(cant){
-		if(pasajeros + cant <= capacidad.capacidad() ){
-			pasajeros +=cant
-
-		}
-		else score.aumentarPuntaje(-cant)
-	}
 }
 object score{
 	var property puntaje = 0
@@ -25,28 +17,6 @@ object score{
 	method position() = game.at(1, game.height()-1)
 }
 
-object capacidad{
-	var property capacidad = 10
-	method text() = capacidad.toString()
-	method position() = game.at(1, game.height()-3)
-}
-
-object hospital{
-	var property position 
-	method image()= "garaje.png"
-	method efectoDeChoque(){
-		score.aumentarPuntaje(autoJugador.pasajeros()*10)
-		autoJugador.pasajeros(0)
-		autoJugador.position(game.at(5,0))
-	}
-	method aparecer(){
-		position = game.at(6,6) 
-		game.addVisual(self)
-		game.onTick(1000,"moverHospital",{self.position(position.down(1))})
-		game.schedule(7000,{game.removeTickEvent("moverHospital")})
-		game.schedule(10000,{game.removeVisual(self)})
-	}
-}
 
 object inicioDeJuego{
 	var property position = game.at(1,3) 
@@ -76,15 +46,6 @@ class Obstaculo{
 	}
 }
 
-class Accidente inherits Obstaculo(velocidad=300){
-	var image
-	var personas
-	override method image()= image
-	override method efectoDeChoque(){
-		autoJugador.subirPasajeros(personas)
-	}
-	
-}
 
 class Auto inherits Obstaculo(velocidad = 500){
 	//Arrancan siempre en(x,7) x varia de 2 a 5 
@@ -99,8 +60,8 @@ class Arbol inherits Obstaculo(velocidad = 300){
 
 
 class CajaMisteriosa inherits Obstaculo(velocidad = 500){
-	const powerUpsDispoibles =[blindaje, invertirControles,congelar,aumentarCapacidad,inmunidad]
-	var efectoQueDoy= powerUpsDispoibles.get(new Range(start=0,end=powerUpsDispoibles.size()-1 ).anyOne())
+	const powerUpsDispoibles =[blindaje, invertirControles,congelar,inmunidad]
+	const efectoQueDoy= powerUpsDispoibles.get(new Range(start=0,end=powerUpsDispoibles.size()-1 ).anyOne())
 	override method image() = "cajaMisteriosa.png"
 	override method efectoDeChoque(){
 		autoJugador.powerUpActual(efectoQueDoy)
@@ -117,7 +78,7 @@ class PowerUp {
 	}
 	//!(game.getObjectsIn(game.at(0,6)).isEmpty())
 	method moverDerecha() {
-		if(autoJugador.position().x()<5 || (game.hasVisual(hospital)&&hospital.position().y()==0) ){
+		if(autoJugador.position().x()<5){
 			autoJugador.position(autoJugador.position().right(1))
 		}
 	}
@@ -145,7 +106,7 @@ object invertirControles inherits PowerUp(duracion=4000){
 		}	
 	}
 	override method moverIzquierda() {
-		if(autoJugador.position().x()<5 || (game.hasVisual(hospital)&&hospital.position().y()==0)){
+		if(autoJugador.position().x()<5){
 			autoJugador.position(autoJugador.position().right(1))
 		}
 	}
@@ -162,13 +123,7 @@ object congelar inherits PowerUp(duracion = 1000){
 	override method moverDerecha(){}
 }
 
-object aumentarCapacidad inherits PowerUp(duracion = 1){
-	override method efecto(){
-		capacidad.capacidad(capacidad.capacidad()+1)
-	}
-}
 object inmunidad inherits PowerUp(duracion = 3000){
-	var img=1
 	override method image() = "autoInmune.png"
 	override method estasInmune ()= true
 	override method efecto(){

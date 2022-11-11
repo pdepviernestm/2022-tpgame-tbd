@@ -1,83 +1,64 @@
 import personajes.*
 import wollok.game.*
+import config.*
 object evento{
-	var flag = 0
 	method inicio(){
-		if(flag==0){
 			nivel1.nivel()
-			flag = 1
 			game.onTick(1000,"puntaje", {score.aumentarPuntaje(1)})
 			game.addVisual(score)
-			game.addVisual(capacidad)
-			game.onTick(15000,"apareceHospital",{hospital.aparecer()})
+			score.puntaje(0)
 			game.removeVisual(inicioDeJuego)
-		}
+		
 	}
 	method gameOver(){
 		game.clear()
 		game.addVisual(cartel)
-		game.schedule(4000,{=> game.stop()})
+		game.schedule(4000,{=> 
+			config.restart()
+		})
 	}
 	
 }
-object nivel1{
-	method nivel(){
-		game.onTick(2000,"generarAuto",{=>generador.generarObstaculos()})
-		game.onTick(2000,"generarArbol",{=> generador.generarArbol()})
-		generador.nivel(0)
-		game.schedule(10000,{self.pasarDeNivel()})
-	}
-	method pasarDeNivel(){
-		game.removeTickEvent("generarAuto")
-		game.removeTickEvent("generarArbol")
-		nivel2.nivel()
-	}
-}
-object nivel2{
-	method nivel(){
-		game.onTick(1500,"generarAuto",{=>generador.generarObstaculos()})
-		game.onTick(1500,"generarArbol",{=> generador.generarArbol()})
-		generador.nivel(1)
-		game.schedule(20000,{self.pasarDeNivel()})
-	}
-	method pasarDeNivel(){
-		game.removeTickEvent("generarAuto")
-		game.removeTickEvent("generarArbol")
-		nivel3.nivel()
-	}
-}
-object nivel3{
-	method nivel(){
-		game.onTick(1500,"generarAuto",{=>generador.generarObstaculos()})
-		game.onTick(1500,"generarArbol",{=> generador.generarArbol()})
-		generador.nivel(2)
-		game.schedule(20000,{self.pasarDeNivel()})
-	}
-	method pasarDeNivel(){
-		game.removeTickEvent("generarAuto")
-		game.removeTickEvent("generarArbol")
-		nivel4.nivel()
-	}
-}
-object nivel4{
-	method nivel(){
-		game.onTick(1300,"generarAuto",{=>generador.generarObstaculos()})
-		game.onTick(1300,"generarArbol",{=> generador.generarArbol()})
-		game.schedule(20000,{self.pasarDeNivel()})
-	}
-	method pasarDeNivel(){
-		game.removeTickEvent("generarAuto")
-		game.removeTickEvent("generarArbol")
-		nivel5.nivel()
-	}
-}
-object nivel5{
-	method nivel(){
-		game.onTick(1000,"generarAuto",{=>generador.generarObstaculos()})
-		game.onTick(1000,"generarArbol",{=> generador.generarArbol()})
-	}
 
+class Nivel{
+	var duracion
+	var tick
+	var genNivel
+	method nivel(){
+		game.onTick(tick,"generarAuto",{=>generador.generarObstaculos()})
+		game.onTick(tick,"generarArbol",{=> generador.generarArbol()})
+		generador.nivel(genNivel)
+		game.schedule(duracion,{self.pasarDeNivel()})
+	}
+	method pasarDeNivel(){
+		game.removeTickEvent("generarAuto")
+		game.removeTickEvent("generarArbol")
+		self.siguiente().nivel()
+	}
+	method siguiente()
 }
+
+object nivel1 inherits Nivel(tick = 2000,duracion=10000,genNivel=0){
+	override method siguiente() = nivel2
+}
+
+object nivel2 inherits Nivel(tick = 1500,duracion=20000,genNivel=1){
+	override method siguiente() = nivel3
+}
+
+object nivel3 inherits Nivel(tick = 1500,duracion=20000,genNivel=2){
+	override method siguiente() = nivel4
+}
+
+object nivel4 inherits Nivel(tick = 1300,duracion=20000,genNivel=2){
+	override method siguiente() = nivel5
+}
+
+object nivel5 inherits Nivel(tick = 1000,duracion=20000,genNivel=2){
+	override method pasarDeNivel(){}
+	override method siguiente(){}
+}
+
 
 object generador{
 	var property nivel = 0  
@@ -103,14 +84,6 @@ object generador{
 		var caja = new CajaMisteriosa(position=carril.aleatorio())
 		game.addVisual(caja)
 		caja.movimiento()
-	}
-	
-	method generarAccidente(){
-		const accidente = new Accidente(position=carril.aleatorio(),
-						image="accidente.png",
-						personas= new Range(start=1,end=5).anyOne())
-		game.addVisual(accidente)
-		accidente.movimiento()
 	}
 
 }
